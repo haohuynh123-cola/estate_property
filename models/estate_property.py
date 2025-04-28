@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 class EstateProperty(models.Model):
     _name = 'estate.property'
@@ -63,7 +64,15 @@ class EstateProperty(models.Model):
                 if offer.status == 'accepted':
                     record.buyer_id = offer.partner_id
                     record.selling_price = offer.price
+                    record.state = 'offer_accepted'
                     break
+
+        # all ofter canceled
+        if not record.offer_ids.filtered(lambda x: x.status == 'accepted'):
+            record.buyer_id = False
+            record.selling_price = 0.0
+            record.state = 'offer_received'
+
 
     # @api.depends('buyer_id.name')
     # def _compute_description(self):
@@ -88,14 +97,14 @@ class EstateProperty(models.Model):
     def action_sold(self):
         for record in self:
             if record.state == 'canceled':
-                raise ValueError("You cannot change the state of a canceled property.")
+                raise UserError("You cannot change the state of a canceled property.")
             else:
                 record.state = 'sold'
 
     def action_cancel(self):
         for record in self:
             if record.state == 'sold':
-                raise ValueError("You cannot change the state of a sold property.")
+                raise UserError("You cannot change the state of a sold property.")
             else :
                 record.state = 'canceled'
 
