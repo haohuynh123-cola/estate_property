@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record id="estate_property_view_form" model="ir.ui.view">
+        <field name="name">estate.property.form</field>
+        <field name="model">estate.property</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_cancel"
+                        type="object"
+                        class="btn-danger"
+                        string="Cancel"
+                        confirm="Are you sure you want to change Cancel"
+                        readonly="1"
+                    />
+                    <button name="action_sold"
+                        type="object"
+                        class="btn-success"
+                        string="Sold"
+                        confirm="Are you sure you want to change Sold"
+                        readonly="1"
+                    />
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="new,offer_accepted,offer_received,sold,canceled" />
+                </header>
+                <sheet>
+
+                    <h1>
+                        <field name="name" placeholder="Property Name" />
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="tag_ids" widget="many2many_tags" />
+                            <field name="property_type_id" />
+                            <field name="postal_code" placeholder="Post Code" />
+                            <field name="date_availability" placeholder="Click pick Date" />
+                        </group>
+                        <group>
+                            <field name="expected_price" />
+                            <field name="best_price" />
+                            <field name="selling_price" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <group>
+                                <field name="description" />
+                                <field name="bedrooms" />
+                                <field name="living_area" />
+                                <field name="facades" />
+                                <field name="garage" />
+                                <field name="garden" />
+                                <field name="garden_area" />
+                                <field name="garden_orientation" />
+                                <field name="total_area" />
+                            </group>
+                        </page>
+                        <page string="Offers" name="offer_ids">
+                            <field name="offer_ids"
+                                widget="sol_o2m"
+                                mode="list">
+                                <form string="Offer" create="false" delete="false">
+                                    <group>
+                                        <field name="price" />
+                                        <field name="partner_id" />
+                                        <field name="validity" />
+                                        <field name="date_deadline" />
+                                        <field name="status" />
+                                    </group>
+                                </form>
+                                <list string="Offers"
+                                >
+                                    <field name="price" class="" />
+                                    <field name="partner_id" />
+                                    <field name="validity" />
+                                    <field name="date_deadline" />
+                                    <!-- add icon Accept and Refuse -->
+                                    <button name="action_accept"
+                                        type="object"
+                                        class="btn-success"
+                                        icon="fa-check"
+                                        string="Accept"
+                                        invisible="status == 'new'"
+                                    />
+                                    <button name="action_refuse"
+                                        type="object"
+                                        class="btn-danger"
+                                        icon="fa-remove"
+                                        string="Refuse"
+                                        invisible="status == 'new'"
+                                    />
+
+                                    <field name="status" />
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Other info">
+                            <group>
+                                <field name="seller_id" />
+                                <field name="buyer_id" readonly="1" />
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="estate_property_view_tree" model="ir.ui.view">
+        <field name="name">estate.property.tree</field>
+        <field name="model">estate.property</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="postal_code" />
+                <field name="bedrooms" />
+                <field name="living_area" />
+                <field name="expected_price" />
+                <field name="selling_price" />
+                <field name="date_availability" />
+            </list>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="estate_property_action" model="ir.actions.act_window">
+        <field name="name">Advertisement</field>
+        <field name="res_model">estate.property</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>
